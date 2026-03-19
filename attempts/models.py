@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from quizzes.models import Quiz
+from quizzes.models import Question
 # Create your models here.
 
 User= settings.AUTH_USER_MODEL
@@ -15,3 +16,11 @@ class Attempt(models.Model):
     def __str__(self):
         return f"{self.user} - {self.quiz}"
 
+class Answer(models.Model):
+    attempt= models.ForeignKey(Attempt, related_name='answers', on_delete=models.CASCADE)
+    question= models.ForeignKey(Question, on_delete=models.CASCADE)
+    selected_answer= models.CharField(max_length=255)
+    is_correct= models.BooleanField()
+
+    def __str__(self):
+        return f"{self.question} - {self.selected_answer}"
