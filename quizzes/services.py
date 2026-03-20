@@ -5,13 +5,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key=os.getenv("GEMINI_API_KEY")
+api_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
 def generate_questions(topic, difficulty, count):
-    model= genai.GenerativeModel("gemini-3-flash-preview")
+    model = genai.GenerativeModel("gemini-3-flash-preview")
 
-    prompt=f"""
+    prompt = f"""
     Generate {count} multiple-choice questions about {topic} at a {difficulty} level.
     Return the response ONLY as a JSON list of objects with these keys:
     "question_text", "options" (a list of 4 strings), and "correct_answer" (must be one of the options).
@@ -19,12 +19,12 @@ def generate_questions(topic, difficulty, count):
     """
 
     try:
-        response= model.generate_content(prompt)
-        data=response.text.strip()
+        response = model.generate_content(prompt)
+        data = response.text.strip()
         if "```" in data:
             data = data.split("```")[1].replace("json", "").strip()
-        data=json.loads(data)
+        data = json.loads(data)  # was json.loads without ()
         return data
     except Exception as e:
-        print(f"AI Error: {e}")
+        print(f"AI Error: {type(e).__name__}: {e}")
         return []

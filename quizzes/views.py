@@ -35,6 +35,15 @@ class CreateQuizView(APIView):
         difficulty= request.data.get('difficulty')
         count= request.data.get('question_count')
 
+        VALID_DIFFICULTIES = ['easy', 'medium', 'hard']
+
+        if not topic or not difficulty or not count:
+            return Response({"error": "topic, difficulty and question_count are required"}, status=400)
+        if difficulty not in VALID_DIFFICULTIES:
+            return Response({"error": "difficulty must be easy, medium or hard"}, status=400)
+        if not isinstance(count, int) or count < 1 or count > 20:
+            return Response({"error": "question_count must be between 1 and 20"}, status=400)
+
         questions_data= generate_questions(topic, difficulty, count)
 
         if not questions_data:
@@ -80,3 +89,14 @@ class QuizDetailView(APIView):
         serializer= QuizSerializer(quiz)
         return Response(serializer.data)
     
+class QuizManageView(APIView):
+    permission_classes = [IsAdmin]
+
+    @swagger_auto_schema(operation_description="Admin only - delete a quiz")
+    def delete(self, request, quiz_id):
+        try:
+            quiz = Quiz.objects.get(id=quiz_id)
+        except Quiz.DoesNotExist:
+            return Response({"error": "Quiz not found"}, status=404)
+        quiz.delete()
+        return Response({"message": "Quiz deleted successfully"}, status=204)
