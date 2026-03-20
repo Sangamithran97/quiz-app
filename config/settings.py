@@ -129,6 +129,13 @@ REST_FRAMEWORK= {
     'DEFAULT_AUTHENTICATION_CLASSES':(
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_THROTTLE_CLASS':[
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES':{
+        'user': '15/day',
+        'quiz_burst': '2/min',
+    }
 }
 
 SIMPLE_JWT={
