@@ -16,7 +16,7 @@ class PerformanceView(APIView):
     def get(self,request):
         stats= Attempt.objects.filter(user=request.user).aggregate(
             total_quizzes=Count('id'),
-            total_score=Count('score'),
+            total_score=Sum('score'),
             average_score=Avg('score')
         )
         return Response({
@@ -37,7 +37,7 @@ class HistoryView(APIView):
 
         data=[]
 
-        for attempt in attempts:
+        for attempt in page:
             data.append({
                 "attempt_id": attempt.id,
                 "quiz_topic": attempt.quiz.topic,

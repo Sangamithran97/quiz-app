@@ -6,6 +6,11 @@ class QuestionSerializer(serializers.ModelSerializer):
         model= Question
         fields= ['id', 'question_text', 'options']
 
+class QuizListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Quiz
+        fields= ['id', 'topic', 'difficulty', 'question_count', 'created_at']
+
 class QuizSerializer(serializers.ModelSerializer):
     questions= QuestionSerializer(many=True, read_only=True)
     class Meta:
